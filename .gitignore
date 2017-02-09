@@ -11,3 +11,5 @@ war*
 *.iml
 *.log
 *.tmp
+dependency-reduced-pom.xml
+token

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-  <appender class="ch.qos.logback.core.ConsoleAppender" name="sink"/>
-  <root level="DEBUG">
+  <appender class="ch.qos.logback.core.helpers.NOPAppender" name="sink"/>
+  <root level="OFF">
     <appender-ref ref="sink"/>
   </root>
 </configuration>
