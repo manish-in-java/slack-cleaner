@@ -10,6 +10,7 @@ war*
 *~
 *.iml
 *.log
+*.sh
 *.tmp
 dependency-reduced-pom.xml
 token
