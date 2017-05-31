@@ -47,7 +47,7 @@ public class Runner
   {
     final Slack slack = Slack.getInstance();
 
-    System.out.print(String.format("# Retrieving messages for channel %s...", channel));
+    System.out.println(String.format("# Retrieving messages for channel %s...", channel));
 
     final ChannelsListResponse channels = slack.methods().channelsList(ChannelsListRequest.builder()
                                                                                           .token(token)
