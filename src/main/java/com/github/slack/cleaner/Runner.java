@@ -7,7 +7,6 @@ import com.github.seratch.jslack.api.methods.request.channels.ChannelsListReques
 import com.github.seratch.jslack.api.methods.request.chat.ChatDeleteRequest;
 import com.github.seratch.jslack.api.methods.response.channels.ChannelsHistoryResponse;
 import com.github.seratch.jslack.api.methods.response.channels.ChannelsListResponse;
-import com.github.seratch.jslack.api.methods.response.chat.ChatDeleteResponse;
 import com.github.seratch.jslack.api.model.Channel;
 import com.github.seratch.jslack.api.model.Message;
 import org.apache.commons.cli.*;
@@ -48,7 +47,7 @@ public class Runner
   {
     final Slack slack = Slack.getInstance();
 
-    System.out.println(String.format("# Retrieving messages for channel %s...", channel));
+    System.out.print(String.format("# Retrieving messages for channel %s...", channel));
 
     final ChannelsListResponse channels = slack.methods().channelsList(ChannelsListRequest.builder()
                                                                                           .token(token)
@@ -72,17 +71,29 @@ public class Runner
       }
       else
       {
+        System.out.println(String.format("# %d messages found in channel %s.", response.getMessages().size(), channel));
         for (final Message message : response.getMessages())
         {
-          System.out.println(String.format("# Deleting message %s...", message.getTs()));
+          System.out.print(String.format("# Deleting message %s ... ", message.getTs()));
 
-          final ChatDeleteResponse chat = slack.methods().chatDelete(ChatDeleteRequest.builder()
-                                                                                      .token(token)
-                                                                                      .channel(match.get().getId())
-                                                                                      .ts(message.getTs())
-                                                                                      .build());
+          try
+          {
+            slack.methods().chatDelete(ChatDeleteRequest.builder()
+                                                        .token(token)
+                                                        .channel(match.get().getId())
+                                                        .ts(message.getTs())
+                                                        .build());
 
-          // Slack has a rate limit of one operation per second for its API.
+            System.out.println(" deleted.");
+          }
+          catch (final Exception e)
+          {
+            System.out.println(String.format(" failed with error: %s", e.getMessage()));
+          }
+
+          // Slack has a rate limit of one operation per second for its API
+          // so wait for a little over 1 second before sending the next API
+          // request.
           Thread.sleep(1050);
         }
 
