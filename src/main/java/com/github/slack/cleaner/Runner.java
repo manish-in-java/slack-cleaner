@@ -39,15 +39,15 @@ public class Runner
       cleanChannel(commandLine.getOptionValue(CommandLineOptions.TOKEN), commandLine.getOptionValue(CommandLineOptions.CHANNEL));
     }
 
-    System.out.println("#                                                                                #");
-    System.out.println("##################################################################################");
+    System.out.println("#                                                                              #");
+    System.out.println("################################################################################");
   }
 
   private void cleanChannel(final String token, final String channel) throws IOException, SlackApiException, InterruptedException
   {
     final Slack slack = Slack.getInstance();
 
-    System.out.println(String.format("# Retrieving messages for channel %s...", channel));
+    printLine(String.format("Retrieving messages for channel %s...", channel));
 
     final ChannelsListResponse channels = slack.methods().channelsList(ChannelsListRequest.builder()
                                                                                           .token(token)
@@ -56,7 +56,7 @@ public class Runner
     final Optional<Channel> match = channels.getChannels().stream().filter(c -> c.getName().equals(channel)).findFirst();
     if (!match.isPresent())
     {
-      System.out.println(String.format("# Channel %s not found.", channel));
+      printLine(String.format("Channel %s not found.", channel));
     }
     else
     {
@@ -67,11 +67,12 @@ public class Runner
 
       if ((response.getMessages() == null) || response.getMessages().isEmpty())
       {
-        System.out.println(String.format("# No messages found in channel %s.", channel));
+        printLine(String.format("No messages found in channel %s.", channel));
       }
       else
       {
-        System.out.println(String.format("# %d messages found in channel %s.", response.getMessages().size(), channel));
+        printLine(String.format("%d message(s) found in channel %s.", response.getMessages().size(), channel));
+
         for (final Message message : response.getMessages())
         {
           System.out.print(String.format("# Deleting message %s ... ", message.getTs()));
@@ -88,7 +89,7 @@ public class Runner
           }
           catch (final Exception e)
           {
-            System.out.println(String.format(" failed with error: %s", e.getMessage()));
+            printLine(String.format(" failed with error: %s", e.getMessage()));
           }
 
           // Slack has a rate limit of one operation per second for its API
@@ -97,7 +98,7 @@ public class Runner
           Thread.sleep(1050);
         }
 
-        System.out.println(String.format("# Cleaned channel %s.", channel));
+        printLine(String.format("Cleaned channel %s.", channel));
       }
     }
 
@@ -121,19 +122,24 @@ public class Runner
     return options;
   }
 
+  private void printLine(final String line)
+  {
+    System.out.println(String.format("# %-76s #", line));
+  }
+
   private void showBanner()
   {
-    System.out.println("##################################################################################");
-    System.out.println("#                                                                                #");
-    System.out.println("#          _____ _            _      _____ _                                     #");
-    System.out.println("#         /  ___| |          | |    /  __ \\ |                                    #");
-    System.out.println("#         \\ `--.| | __ _  ___| | __ | /  \\/ | ___  __ _ _ __   ___ _ __          #");
-    System.out.println("#          `--. \\ |/ _` |/ __| |/ / | |   | |/ _ \\/ _` | '_ \\ / _ \\ '__|         #");
-    System.out.println("#         /\\__/ / | (_| | (__|   <  | \\__/\\ |  __/ (_| | | | |  __/ |            #");
-    System.out.println("#         \\____/|_|\\__,_|\\___|_|\\_\\  \\____/_|\\___|\\__,_|_| |_|\\___|_|            #");
-    System.out.println("#                                                                                #");
-    System.out.println("##################################################################################");
-    System.out.println("#                                                                                #");
+    System.out.println("################################################################################");
+    System.out.println("#                                                                              #");
+    System.out.println("#         _____ _            _      _____ _                                    #");
+    System.out.println("#        /  ___| |          | |    /  __ \\ |                                   #");
+    System.out.println("#        \\ `--.| | __ _  ___| | __ | /  \\/ | ___  __ _ _ __   ___ _ __         #");
+    System.out.println("#         `--. \\ |/ _` |/ __| |/ / | |   | |/ _ \\/ _` | '_ \\ / _ \\ '__|        #");
+    System.out.println("#        /\\__/ / | (_| | (__|   <  | \\__/\\ |  __/ (_| | | | |  __/ |           #");
+    System.out.println("#        \\____/|_|\\__,_|\\___|_|\\_\\  \\____/_|\\___|\\__,_|_| |_|\\___|_|           #");
+    System.out.println("#                                                                              #");
+    System.out.println("################################################################################");
+    System.out.println("#                                                                              #");
   }
 
   private void showHelp()
