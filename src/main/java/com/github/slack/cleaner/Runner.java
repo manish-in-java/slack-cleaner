@@ -3,15 +3,17 @@ package com.github.slack.cleaner;
 import com.github.seratch.jslack.Slack;
 import com.github.seratch.jslack.api.methods.SlackApiException;
 import com.github.seratch.jslack.api.methods.request.channels.ChannelsHistoryRequest;
-import com.github.seratch.jslack.api.methods.request.channels.ChannelsListRequest;
 import com.github.seratch.jslack.api.methods.request.chat.ChatDeleteRequest;
+import com.github.seratch.jslack.api.methods.request.conversations.ConversationsListRequest;
 import com.github.seratch.jslack.api.methods.response.channels.ChannelsHistoryResponse;
-import com.github.seratch.jslack.api.methods.response.channels.ChannelsListResponse;
-import com.github.seratch.jslack.api.model.Channel;
+import com.github.seratch.jslack.api.methods.response.conversations.ConversationsListResponse;
+import com.github.seratch.jslack.api.model.Conversation;
+import com.github.seratch.jslack.api.model.ConversationType;
 import com.github.seratch.jslack.api.model.Message;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class Runner
@@ -49,11 +51,19 @@ public class Runner
 
     printLine(String.format("Retrieving messages for channel %s...", channel));
 
-    final ChannelsListResponse channels = slack.methods().channelsList(ChannelsListRequest.builder()
-                                                                                          .token(token)
-                                                                                          .build());
+    final ConversationsListResponse channels = slack.methods()
+                                                    .conversationsList(ConversationsListRequest.builder()
+                                                                                               .excludeArchived(true)
+                                                                                               .token(token)
+                                                                                               .types(Arrays.asList(ConversationType.PRIVATE_CHANNEL
+                                                                                                   , ConversationType.PUBLIC_CHANNEL))
+                                                                                               .build());
 
-    final Optional<Channel> match = channels.getChannels().stream().filter(c -> c.getName().equals(channel)).findFirst();
+    final Optional<Conversation> match = channels.getChannels()
+                                                 .stream()
+                                                 .filter(c -> c.getName().equals(channel)
+                                                     && !c.isReadOnly())
+                                                 .findFirst();
     if (!match.isPresent())
     {
       printLine(String.format("Channel %s not found.", channel));
