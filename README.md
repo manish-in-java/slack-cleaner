@@ -1,8 +1,20 @@
 # slack-cleaner
 
-Java utility to delete all messages from a [Slack](https://www.slack.com) channel.
+Java utility to delete all messages from a [Slack](https://www.slack.com)
+channel.
+
+### Pre-requisites
+
+1. Java Development Kit 8 or later.
+1. Apache Maven 3.2 or later.
+1. A [Slack](https://www.slack.com) account.
+1. An API token for the Slack account.
 
 ### Install
+
+Download or clone this repository. Then, from a command prompt, change to the
+directory where the repository code was downloaded, and execute the following
+command:
 
     mvn clean package
 
@@ -10,7 +22,8 @@ This will generate a JAR file in the `target` folder.
 
 ### Before running
 
-Make sure to have an OAuth token for your [Slack team](https://api.slack.com/docs/oauth-test-tokens).
+Make sure to have an OAuth token for your
+[Slack team](https://api.slack.com/docs/oauth-test-tokens).
 
 ### Usage
 
@@ -18,7 +31,9 @@ Run the JAR as
 
     java -jar slack-cleaner*.jar -token [Slack API token] -channel [Slack channel name]
 
-Replace `[Slack API token]` with the Slack OAuth token for your team and `[Slack channel name]` with the readable channel name from which messages need to be deleted (for example, `general`, or `team`).
+Replace `[Slack API token]` with the Slack OAuth token for your team and
+`[Slack channel name]` with the readable channel name from which messages
+need to be deleted (for example, `general`, `team`, 'alerts', 'announcements', etc.).
 
 # License
 This application and its associated source code in its entirety is being made
